@@ -1,2 +1,7 @@
 fastapi==0.115.6
 uvicorn==0.34.0
+pydantic==2.10.4
+datasets==3.2.0
+unstructured==0.16.11
+asyncpg==0.30.0
+prefect==3.1.10
