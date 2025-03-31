@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.api import api
+
 from typing import Any
 
 app = FastAPI(
@@ -15,6 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
+
+# Routers
+app.include_router(api)
 
 # Index page
 @app.get("/")
