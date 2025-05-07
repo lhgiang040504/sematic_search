@@ -4,8 +4,6 @@ from datasets import load_dataset
 # from dotenv import dotenv_values
 # config = dotenv_values(".env")
 
-# #login(config['HUGGINGFACE_TOKEN'])
-
 from src.ingestion.connector.abstract_connector import Connector
 from src.utils.hash import generate_md5_hash
 from src.model import Document
