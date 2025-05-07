@@ -1,7 +1,10 @@
 from typing import Optional, Iterator
 from datasets import load_dataset
 from huggingface_hub import login
-login("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")
+from dotenv import dotenv_values
+config = dotenv_values(".env")
+
+login(config['HUGGINGFACE_TOKEN'])
 
 from src.ingestion.connector.abstract_connector import Connector
 from src.utils.hash import generate_md5_hash
