@@ -8,5 +8,3 @@ datasets==3.2.0
 unstructured==0.16.11
 asyncpg==0.30.0
 python-dotenv==1.0.0
-torch==2.7.0
-sentence_transformers==4.1.0
