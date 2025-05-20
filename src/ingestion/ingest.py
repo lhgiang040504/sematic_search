@@ -5,6 +5,7 @@ from src.utils.hash import generate_md5_hash
 from src.ingestion.chunking import semantic_chunk
 from src.ingestion.connector.connector_main import get_connector_map
 from src.model import Passage, ConnectorType
+from src.ingestion.embedding import generate_embedding 
 
 def ingest_pipeline(request: Request, connector_type: ConnectorType, config: dict[str, Any]):
     # Connect to data source
@@ -26,6 +27,7 @@ def ingest_pipeline(request: Request, connector_type: ConnectorType, config: dic
                         **document.model_dump(),
                         "content": semantic_passage,
                         "passage_id": generate_md5_hash(semantic_passage),
+                        "embedding": generate_passage_embedding(semantic_passage)
                     }
                 ),
                 collection=collection,
@@ -40,3 +42,6 @@ def index_document(passage: Passage, collection) -> None:
         {"$set": passage.model_dump()},
         upsert=True
     )
+
+def generate_passage_embedding(content: str) -> List[float]:
+    return generate_embedding(content)
