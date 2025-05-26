@@ -20,7 +20,7 @@ class HuggingFaceConnector(Connector):
     def load_data(self) -> Iterator[Document]:
         dataset = load_dataset(self.dataset_path, name=self.dataset_name, split=self.split)
         # Limits how many records to process
-        print(len(dataset))
+        print(f'Length of entire dataset: {len(dataset)}')
         max_idx = min(len(dataset), self.max_size)
         for start_idx in range(0, max_idx, self.chunk_size):
             rows = dataset.select(range(start_idx, min(start_idx + self.chunk_size, max_idx)))
