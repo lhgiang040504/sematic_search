@@ -18,7 +18,7 @@ def keyword_search(request: Request, query: str, max_results: int):
     database = request.app.mongodb.get_database()
     collection = database["documents"]
 
-    # Assumes text index has been created on "content"
+    # Inverted Index
     collection.create_index([("content", "text")])
     cursor = collection.find(
         {"$text": {"$search": query}},
@@ -58,45 +58,10 @@ def vector_search(request: Request, query: str, max_results: int) -> List[Passag
         }
     ]
 
-    results = collection.aggregate(pipeline)
-    return [Passage(**doc) for doc in results]
-
-def hybrid_search(request: Request, query: str, max_results: int) -> List[Passage]:
-    # Connect to MongoDB
-    database = request.app.mongodb.get_database()
-    collection = database["documents"]
-
-    # Query embedding
-    query_embedding = generate_embedding(query)
-    # Pipeline truy vấn vector search
-    pipeline = [
-        {
-            "$search": {
-                "index": "default",  # Tên search index đã tạo trong Atlas
-                "knnBeta": {
-                    "vector": query_embedding,
-                    "path": "embedding",
-                    "k": max_results
-                }
-            }
-        },
-        {
-            "$project": {
-                "_id": 0,
-                "doc_id": 1,
-                "passage_id": 1,
-                "content": 1,
-                "embedding": 0,
-                "score": {"$meta": "searchScore"}
-            }
-        }
-    ]
-
     # Run the aggregation pipeline
     cursor = collection.aggregate(pipeline)
 
     return to_passages(cursor)
-
 
 
 def to_passages(cursor) -> List[PassageResponse]:
