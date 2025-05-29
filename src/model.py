@@ -30,3 +30,6 @@ class SearchStrategyType(Enum):
     FALLBACK_MECHANISM = "FALLBACK_MECHANISM"
     TIERED_SEARCH = "TIERED_SEARCH"
 
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None  # Optional: if you want to support session-based chat

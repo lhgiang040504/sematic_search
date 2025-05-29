@@ -1,3 +1,4 @@
+import os
 from typing import Any
 
 from fastapi import FastAPI
@@ -10,6 +11,11 @@ from src.utils.db_connection.mongodb_connector import MongoDB
 # Load environment variables
 from dotenv import dotenv_values
 config = dotenv_values(".env")
+
+os.environ['LANGCHAIN_TRACING_V2'] = config['LANGCHAIN_TRACING_V2']
+os.environ['LANGCHAIN_ENDPOINT'] = config['LANGCHAIN_ENDPOINT']
+os.environ['LANGCHAIN_API_KEY'] = config['LANGCHAIN_API_KEY']
+os.environ['TOGETHER_API_KEY'] = config['TOGETHER_API_KEY']
 
 app = FastAPI(
     title="Semantic Search",
@@ -51,7 +57,7 @@ app.include_router(api)
 
 
 # Index page
-@app.get("/")
+@app.get("/test", tags=["Test"])
 def root() -> dict[str, Any]:
     return {
         "introduction": "Welcome to Semantic Search",
