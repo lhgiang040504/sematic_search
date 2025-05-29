@@ -8,3 +8,7 @@ datasets==3.2.0
 unstructured==0.16.11
 asyncpg==0.30.0
 python-dotenv==1.0.0
+langchain-together
+langchain_community
+langchainhub
+langchain
