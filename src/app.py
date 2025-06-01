@@ -22,12 +22,18 @@ app = FastAPI(
     description="Semantic Search API v1"
 )
 
+
+origins = [
+    "http://localhost:3000",  # Thêm địa chỉ của frontend của bạn
+]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-    allow_credentials=True,
+    allow_origins=origins,         # Cho phép nguồn gốc
+    allow_credentials=True,        # Cho phép gửi cookie hoặc token
+    allow_methods=["*"],           # Cho phép tất cả các phương thức HTTP
+    allow_headers=["*"],           # Cho phép tất cả các header
 )
 
 
