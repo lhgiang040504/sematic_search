@@ -12,7 +12,8 @@ def ingest_pipeline(request: Request, connector_type: ConnectorType, config: dic
     connector_function = get_connector_map(config).get(connector_type)
     # Connect to database
     database = request.app.mongodb.get_database()
-    collection = database["documents"]
+    collection_name = connector_function().name
+    collection = database[collection_name]
 
     if not connector_function:
         raise Exception(f"No connector for: {connector_type}")
@@ -20,18 +21,21 @@ def ingest_pipeline(request: Request, connector_type: ConnectorType, config: dic
     for document in connector_function().load_data():
         cleaned_content = clean_document(document.content)
         semantic_passages = semantic_chunk(cleaned_content)
-        for semantic_passage in semantic_passages:
-            index_document(
-                Passage(
-                    **{
-                        **document.model_dump(),
-                        "content": semantic_passage,
-                        "passage_id": generate_md5_hash(semantic_passage),
-                        "embedding": generate_passage_embedding(semantic_passage)
-                    }
-                ),
-                collection=collection,
+        doc_id = document.doc_id
+
+        for id, semantic_passage in enumerate(semantic_passages):
+            chunk_id = f'{doc_id}_{int(id):04d}'
+                
+            # Create document and store
+            doc_to_store = Passage(
+                **{
+                    **document.model_dump(),
+                    "content": semantic_passage,
+                    "passage_id": f'{chunk_id}_{generate_md5_hash(semantic_passage)}',
+                    "embedding": generate_passage_embedding(semantic_passage),
+                }
             )
+            index_document(doc_to_store, collection=collection)
 
 def clean_document(content: str) -> str:
     return content

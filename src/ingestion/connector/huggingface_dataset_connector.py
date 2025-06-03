@@ -16,6 +16,7 @@ class HuggingFaceConnector(Connector):
         self.split = split
         self.max_size = max_size
         self.chunk_size = chunk_size
+        self.name = f"HuggingFaceDataset-{self.dataset_name}-{self.split}"
 
     def load_data(self) -> Iterator[Document]:
         dataset = load_dataset(self.dataset_path, name=self.dataset_name, split=self.split)
