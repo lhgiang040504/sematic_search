@@ -24,7 +24,7 @@ app = FastAPI(
 
 
 origins = [
-    "http://localhost:3000",  # Thêm địa chỉ của frontend của bạn
+    "http://localhost:3000",  # Frontend development server
 ]
 
 

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Any
 
 from src.model import Passage, PassageResponse
 from src.ingestion.embedding import generate_embedding
@@ -9,14 +9,16 @@ from fastapi import Request
 
 class SearchStrategy(ABC):
     @abstractmethod
-    def search(self, request: Request, query: str, max_results: int) -> List[Passage]:
+    def search(self, request: Request, config: dict[str, Any]) -> List[Passage]:
         pass
 
 
-def keyword_search(request: Request, query: str, max_results: int):
+def keyword_search(request: Request, config: dict[str, Any]) -> List[Passage]:
     # Connect to MongoDB
     database = request.app.mongodb.get_database()
-    collection = database["documents"]
+    collection = database[config["dataset_name"]]
+    query = config.get("query", "")
+    max_results = config.get("max_results", 10)
 
     # Inverted Index
     collection.create_index([("content", "text")])
@@ -28,10 +30,12 @@ def keyword_search(request: Request, query: str, max_results: int):
     return to_passages(cursor)
 
 
-def vector_search(request: Request, query: str, max_results: int) -> List[Passage]:
+def vector_search(request: Request, config: dict[str, Any]) -> List[Passage]:
     # Connect to MongoDB
     database = request.app.mongodb.get_database()
-    collection = database["documents"]
+    collection = database[config["dataset_name"]]
+    query = config.get("query", "")
+    max_results = config.get("max_results", 10)
 
     # Query embedding
     query_embedding = generate_embedding(query)
@@ -39,10 +43,10 @@ def vector_search(request: Request, query: str, max_results: int) -> List[Passag
     pipeline = [
         {
             "$vectorSearch": {
-                "index": "vector_index",  # tên index bạn đã tạo
+                "index": "vector_index",
                 "path": "embedding",
                 "queryVector": query_embedding,
-                "numCandidates": 100,   # bạn có thể điều chỉnh
+                "numCandidates": 100,  
                 "limit": max_results
             }
         },

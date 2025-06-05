@@ -19,6 +19,7 @@ def ingest_endpoint(
             "split": "test",
             "max_size": 100,
             "chunk_size": 100,
+            "dataset_folderpath": "C:\\Users\\Lenovo\\learning\\sematic_search\\data\\Cranfield\\Cranfield"
         })) -> dict[str, Any]:
     
     ingest_pipeline(request=req, connector_type=connector_type, config=config)
@@ -27,15 +28,17 @@ def ingest_endpoint(
     }
 
 
-@api.get("/search", tags=["Search"])
+@api.post("/search", tags=["Search"])
 async def search_endpoint(
         request: Request, 
         strategy_type: SearchStrategyType = SearchStrategyType.HYBRID_SEARCH,
-        query: str = Query(default="does human hair stop squirrels", description="MS MARCO Dataset: https://huggingface.co/datasets/microsoft/ms_marco/viewer/v1.1/train"),
-        max_results: int = 5,
-        ) -> dict[str, Any]:
+        config: dict = Body(default={
+            "query": "does human hair stop squirrels",
+            "dataset_name": "HuggingFaceDataset-v1.1-test",
+            "max_results": 5
+        })) -> dict[str, Any]:
         
-    search_results = search_pipeline(request, strategy_type, query, max_results)
+    search_results = search_pipeline(request, strategy_type, config)
     return {
         "results": search_results,
         "total_results": len(search_results),

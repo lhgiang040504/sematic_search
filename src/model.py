@@ -10,8 +10,7 @@ class Document(BaseModel):
 
 class ConnectorType(Enum):
     HUGGINGFACE_DATASET = "HUGGINGFACE_DATASET"
-    FILE = "FILE"
-    SQL = "SQL"
+    CRANFIELD = "CRANFIELD"
 
 class Passage(BaseModel):
     doc_id: str
