@@ -30,12 +30,11 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # Cho phép nguồn gốc
-    allow_credentials=True,        # Cho phép gửi cookie hoặc token
-    allow_methods=["*"],           # Cho phép tất cả các phương thức HTTP
-    allow_headers=["*"],           # Cho phép tất cả các header
+    allow_origins=origins,         # Allow origins
+    allow_credentials=True,        # Allow sending cookies or tokens
+    allow_methods=["*"],           # Allow all HTTP methods
+    allow_headers=["*"],           # Allow all headers
 )
-
 
 # MongoDB connection
 @app.on_event("startup")

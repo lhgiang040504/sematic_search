@@ -52,7 +52,12 @@ async def chat_endpoint(
         chat_input: ChatRequest = Body(default=ChatRequest(message="does human hair stop squirrels", session_id=None)),
         max_results: int = 5,
         ) -> dict[str, Any]:
-    response_text = chat_pipeline(request, strategy_type, max_results, chat_input.message, chat_input.session_id)
+    config = {
+        "query": chat_input.message,
+        "dataset_name": "HuggingFaceDataset-v1.1-test",
+        "max_results": max_results,
+    }
+    response_text = chat_pipeline(request, strategy_type, config)
     return {
         "response": response_text,
         "session_id": chat_input.session_id
