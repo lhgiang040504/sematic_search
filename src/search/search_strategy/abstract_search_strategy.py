@@ -23,9 +23,13 @@ def keyword_search(request: Request, config: dict[str, Any]) -> List[Passage]:
     # Inverted Index
     collection.create_index([("content", "text")])
     cursor = collection.find(
-        {"$text": {"$search": query}},
-        {"score": {"$meta": "textScore"}}
-    ).sort([("score", {"$meta": "textScore"})]).limit(max_results)
+    {"$text": {"$search": query}},
+    {
+        "doc_id": 1,
+        "passage_id": 1,
+        "content": 1,
+        "score": {"$meta": "textScore"}
+    }).sort([("score", {"$meta": "textScore"})]).limit(max_results)
 
     return to_passages(cursor)
 
