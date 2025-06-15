@@ -4,6 +4,7 @@ from fastapi import Body, APIRouter, Request, Query
 from src.ingestion.ingest import ingest_pipeline
 from src.search.search import search_pipeline
 from src.chat.chatbot import chat_pipeline
+# from src.evaluation.evaluate import evaluate_pipeline
 
 from src.model import ConnectorType, SearchStrategyType, Passage, PassageResponse, ChatRequest
 
@@ -62,3 +63,27 @@ async def chat_endpoint(
         "response": response_text,
         "session_id": chat_input.session_id
     }
+
+
+# @api.post("/evaluation", tags=["Evaluation"])
+# async def evaluation_endpoint(
+#     request: Request,
+#     strategy_type: SearchStrategyType = SearchStrategyType.HYBRID_SEARCH,
+#     config: dict = Body(default={
+#         "dataset_name": "HuggingFaceDataset-v1.1-test",
+#         "eval_queries": [
+#             {"query": "does human hair stop squirrels", "ground_truth_passage_ids": [1, 2, 3]},
+#             {"query": "what is the capital of France", "ground_truth_passage_ids": [5, 8, 9]}
+#         ],
+#         "metrics": ["precision@5", "recall@5", "ndcg@5"]
+#     })
+# ) -> dict[str, Any]:
+    
+#     # Giả sử bạn có một evaluation_pipeline function đã implement
+#     # Nếu chưa có, bạn có thể implement nó dựa trên search_pipeline + metrics calculator
+#     evaluation_results = evaluate_pipeline(request, strategy_type, config)
+    
+#     return {
+#         "evaluation_results": evaluation_results,
+#         "total_queries": len(config.get("eval_queries", [])),
+#     }
