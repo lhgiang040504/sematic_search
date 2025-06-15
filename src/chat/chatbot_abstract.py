@@ -23,6 +23,23 @@ def prompting() -> str:
     """
     return ChatPromptTemplate.from_template(template)
 
+def chitchat_prompting() -> str:
+    """
+    A function to handle the chitchat prompting logic.
+
+    Returns:
+        str: The processed prompt.
+    """
+    # Chitchat prompt
+    template = """You are a friendly and engaging AI assistant. Have a natural and human-like conversation with the user.
+    Answer the user input in a helpful and polite manner.
+
+    User: {question}
+
+    AI:"""
+    
+    return ChatPromptTemplate.from_template(template)
+
 def multi_query_prompting() -> str:
     """
     A function to handle the multi-query prompting logic.
@@ -93,7 +110,7 @@ def decomposition_answer_prompting() -> str:
 
 
 # Get llm model
-def get_llm_model(model_name: str = "mistralai/Mixtral-8x7B-Instruct-v0.1"):
+def get_llm_model(model_name: str = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"):
     """
     A function to retrieve a language model from LangChain hub.
     
