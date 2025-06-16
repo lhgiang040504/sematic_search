@@ -9,7 +9,7 @@ class GeneralChain(BaseChain):
         return self.prompt | self.llm | self.parser
     
     def retrieve(self, request, strategy_type, config) ->  Dict[str, Any]:
-        results = search_pipeline(request, strategy_type, config)
+        results = search_pipeline(strategy_type, config)
         docs = [result.content for result in results]
 
         return {
@@ -54,7 +54,7 @@ class MultiQueryChain(BaseChain):
         
         for query in queries:
             # Process each query through the search pipeline
-            results = search_pipeline(request, strategy_type, {**config, 'query': query})
+            results = search_pipeline(strategy_type, {**config, 'query': query})
             patial_docs = [result.content for result in results]
             docs.append(patial_docs)
 
@@ -79,7 +79,7 @@ class DecompositionChain(BaseChain):
         
         for query in queries:
             # Process each query through the search pipeline
-            results = search_pipeline(request, strategy_type, {**config, 'query': query})
+            results = search_pipeline(strategy_type, {**config, 'query': query})
             patial_docs = [result.content for result in results]
             docs.append(patial_docs)
 
