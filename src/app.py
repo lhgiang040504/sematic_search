@@ -36,25 +36,25 @@ app.add_middleware(
     allow_headers=["*"],           # Allow all headers
 )
 
-# MongoDB connection
-@app.on_event("startup")
-def startup_db_client():
-    app.mongodb = MongoDB(uri=config['MONGODB_URI'], db_name=config['MONGODB_DB'])
-    app.mongodb.init()  # Initialize the MongoDB connection
-    print("Connected to MongoDB database!")
+# # MongoDB connection
+# @app.on_event("startup")
+# def startup_db_client():
+#     app.mongodb = MongoDB(uri=config['MONGODB_URI'], db_name=config['MONGODB_DB'])
+#     app.mongodb.init()  # Initialize the MongoDB connection
+#     print("Connected to MongoDB database!")
 
-    # Test
-    # db = app.mongodb.get_database()
-    # collection = db["documents"]  # or your collection name
-    #collection.insert_one({'passage_id': 'abc', 'content': 'abc', 'doc_id': 'abc', 'embedding': [1.0, 2.0, 3.0]})
-    #print("Inserted test document into MongoDB collection!")
+#     # Test
+#     # db = app.mongodb.get_database()
+#     # collection = db["documents"]  # or your collection name
+#     #collection.insert_one({'passage_id': 'abc', 'content': 'abc', 'doc_id': 'abc', 'embedding': [1.0, 2.0, 3.0]})
+#     #print("Inserted test document into MongoDB collection!")
 
 
-# Close the MongoDB connection on shutdown
-@app.on_event("shutdown")
-def shutdown_db_client():
-    app.mongodb.close()  # Close the MongoDB connection
-    print("Disconnected from MongoDB database!")
+# # Close the MongoDB connection on shutdown
+# @app.on_event("shutdown")
+# def shutdown_db_client():
+#     app.mongodb.close()  # Close the MongoDB connection
+#     print("Disconnected from MongoDB database!")
 
 
 # Routers

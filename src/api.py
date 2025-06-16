@@ -39,7 +39,7 @@ async def search_endpoint(
             "max_results": 5
         })) -> dict[str, Any]:
         
-    search_results = search_pipeline(request, strategy_type, config)
+    search_results = search_pipeline(strategy_type, config)
     return {
         "results": search_results,
         "total_results": len(search_results),
