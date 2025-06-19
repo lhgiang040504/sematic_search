@@ -1,7 +1,9 @@
 import re
 from langdetect import detect, DetectorFactory
 DetectorFactory.seed = 0  # for consistent result
+from prefect import task
 
+@task
 def is_valid_natural_language_query(query: str) -> bool:
     # Check too short
     if len(query) < 3:
@@ -16,7 +18,7 @@ def is_valid_natural_language_query(query: str) -> bool:
         return False
     return True
 
-
+@task
 def detect_language(query: str) -> str:
     try:
         return detect(query)

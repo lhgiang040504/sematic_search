@@ -1,73 +1,82 @@
+# from threading import Lock
+# from typing import List
+
+# from transformers import MarianMTModel, MarianTokenizer
+
+# model_name = "Helsinki-NLP/opus-mt-vi-en"
+# translate_model = None
+# translate_tokenizer = None
+# model_lock = Lock()
+
+# def load_translation_model():
+#     global translate_model, translate_tokenizer
+#     if translate_model is None or translate_tokenizer is None:
+#         with model_lock:
+#             if translate_model is None or translate_tokenizer is None:
+#                 translate_tokenizer = MarianTokenizer.from_pretrained(model_name)
+#                 translate_model = MarianMTModel.from_pretrained(model_name)
+#     return translate_model, translate_tokenizer
+
+# from threading import Lock
+# from typing import List
+
+# from transformers import MarianMTModel, MarianTokenizer
+
+# model_name = "Helsinki-NLP/opus-mt-vi-en"
+# translate_model = None
+# translate_tokenizer = None
+# model_lock = Lock()
+
+# def load_translation_model():
+#     global translate_model, translate_tokenizer
+#     if translate_model is None or translate_tokenizer is None:
+#         with model_lock:
+#             if translate_model is None or translate_tokenizer is None:
+#                 translate_tokenizer = MarianTokenizer.from_pretrained(model_name)
+#                 translate_model = MarianMTModel.from_pretrained(model_name)
+#     return translate_model, translate_tokenizer
+
+# def translate_vi_to_en(text: str) -> str:
+#     translate_model, translate_tokenizer = load_translation_model()
+#     batch = translate_tokenizer([text], return_tensors="pt", padding=True)
+#     gen = translate_model.generate(**batch)
+#     translated = translate_tokenizer.batch_decode(gen, skip_special_tokens=True)
+#     return translated[0]
+
+# if __name__ == "__main__":
+#     vi_text = "Tôi yêu lập trình và trí tuệ nhân tạo."
+#     en_text = translate_vi_to_en(vi_text)
+#     print(f"VI: {vi_text}")
+#     print(f"EN: {en_text}")
+
 from threading import Lock
-from typing import Optional
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from langdetect import detect
-from dotenv import dotenv_values
+from typing import List
 
-# Load config (nếu sau này bạn muốn chọn model qua .env)
-config = dotenv_values(".env")
-translate_model_name = config.get("TRANSLATE_MODEL", "facebook/nllb-200-distilled-600M")
+from transformers import MarianMTModel, MarianTokenizer
 
-# Global model & lock
-tokenizer = None
-model = None
+model_name = "Helsinki-NLP/opus-mt-vi-en"
+translate_model = None
+translate_tokenizer = None
 model_lock = Lock()
 
-# Lang map
-lang_map = {
-    'vi': 'vi',
-    'en': 'en',
-    # Add more if needed
-}
-
 def load_translation_model():
-    global tokenizer, model
-    if model is None or tokenizer is None:
+    global translate_model, translate_tokenizer
+    if translate_model is None or translate_tokenizer is None:
         with model_lock:
-            print("Loading translation model...")
-            tokenizer_local = AutoTokenizer.from_pretrained(translate_model_name)
-            model_local = AutoModelForSeq2SeqLM.from_pretrained(translate_model_name)
-            tokenizer = tokenizer_local
-            model = model_local
-    return tokenizer, model
+            if translate_model is None or translate_tokenizer is None:
+                translate_tokenizer = MarianTokenizer.from_pretrained(model_name)
+                translate_model = MarianMTModel.from_pretrained(model_name)
+    return translate_model, translate_tokenizer
 
-def detect_language(text: str) -> str:
-    try:
-        return detect(text)
-    except Exception as e:
-        print(f"Language detection error: {e}")
-        return 'unknown'
-
-def translate_to_english(text: str) -> str:
-    tokenizer_local, model_local = load_translation_model()
-
-    detected_lang = detect_language(text)
-    print(f"Detected language: {detected_lang}")
-
-    if detected_lang == 'en':
-        return text
-
-    if detected_lang not in lang_map:
-        print("Unsupported language, fallback to original text.")
-        return text
-
-    src_lang = lang_map[detected_lang]
-    tgt_lang = lang_map['en']
-
-    tokenizer_local.src_lang = src_lang
-    encoded = tokenizer_local(text, return_tensors="pt")
-
-    generated_tokens = model_local.generate(
-        **encoded,
-        forced_bos_token_id=tokenizer_local.lang_code_to_id[tgt_lang]
-    )
-
-    translated_text = tokenizer_local.batch_decode(generated_tokens, skip_special_tokens=True)[0]
-    return translated_text
+def translate_vi_to_en(text: str) -> str:
+    translate_model, translate_tokenizer = load_translation_model()
+    batch = translate_tokenizer([text], return_tensors="pt", padding=True)
+    gen = translate_model.generate(**batch)
+    translated = translate_tokenizer.batch_decode(gen, skip_special_tokens=True)
+    return translated[0]
 
 if __name__ == "__main__":
-    print("----- Testing translation -----")
-    test_text_vi = "Làm thế nào để cài đặt Python trên máy tính của tôi?"
-    translated = translate_to_english(test_text_vi)
-    print(f"Original: {test_text_vi}")
-    print(f"Translated: {translated}")
+    vi_text = "Tôi yêu lập trình và trí tuệ nhân tạo."
+    en_text = translate_vi_to_en(vi_text)
+    print(f"VI: {vi_text}")
+    print(f"EN: {en_text}")
