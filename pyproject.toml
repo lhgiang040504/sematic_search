@@ -1,0 +1,25 @@
+[project]
+name = "sematic-search"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.6",
+    "uvicorn>=0.34.0",
+    "pydantic>=2.10.4",
+    "pymongo>=4.7.0",
+    "motor>=3.2.0",
+    "datasets>=3.2.0",
+    "unstructured>=0.16.11",
+    "asyncpg>=0.30.0",
+    "python-dotenv>=1.0.0",
+    "langchain-together>=0.3.0",
+    "langchain-community>=0.3.25",
+    "langchainhub>=0.1.21",
+    "langchain>=0.3.25",
+    "prefect>=3.4.6",
+    "sentencepiece>=0.2.0",
+    "torch>=2.7.1",
+    "sentence-transformers>=4.1.0",
+]
