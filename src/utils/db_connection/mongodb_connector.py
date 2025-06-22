@@ -23,3 +23,13 @@ class MongoDB:
     def get_database(self) -> Database:
         assert self.database is not None, "Database not initialized"
         return self.database
+    
+ 
+# Load environment variables
+from dotenv import dotenv_values
+config = dotenv_values(".env")
+
+def get_collection(dataset_name: str) -> Database:
+    client = MongoClient(config['MONGODB_URI'])
+    db = client[config['MONGODB_DB']]
+    return db[dataset_name]
